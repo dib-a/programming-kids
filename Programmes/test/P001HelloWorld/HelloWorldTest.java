@@ -1,3 +1,5 @@
+package P001HelloWorld;
+
 import static org.junit.Assert.assertEquals;
 
 import java.io.ByteArrayOutputStream;
@@ -7,7 +9,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-public class MainTest {
+public class HelloWorldTest {
 
     private final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private final PrintStream originalOut = System.out;
@@ -24,8 +26,8 @@ public class MainTest {
 
     @Test
     public void testAdd() {
-        Main main = new Main();
-        main.sayHello();
+        HelloWorld helloWorld = new HelloWorld();
+        helloWorld.sayHello();
         assertEquals("Hello World!\n", outContent.toString());
     }
 }
