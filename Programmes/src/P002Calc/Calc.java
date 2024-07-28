@@ -3,7 +3,10 @@ package P002Calc;
 public class Calc {
 
     public static void main(String[] args) {
+        // Hier wird ein Object von (der Klasse) Calc erzeugt
         Calc calc = new Calc();
+
+        //TODO: Füge hier die Methodenaufrufe ein
     }
 
     //TODO: Addiere 2 Zahlen
