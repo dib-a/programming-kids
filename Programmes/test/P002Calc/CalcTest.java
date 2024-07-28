@@ -1,13 +1,13 @@
 package P002Calc;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
 
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
+import static org.junit.Assert.assertEquals;
 
 public class CalcTest {
 
@@ -27,25 +27,25 @@ public class CalcTest {
     @Test
     public void testAdd() {
         Calc calc = new Calc();
-        assertEquals(calc.add(1,2),3,0.1);
+        assertEquals(calc.add(1.0, 2.0), 3, 0.1);
     }
 
     @Test
     public void testSub() {
         Calc calc = new Calc();
-        assertEquals(calc.sub(2,1),1,0.1);
+        assertEquals(calc.sub(2.0, 1.0), 1, 0.1);
     }
 
     @Test
     public void testMul() {
         Calc calc = new Calc();
-        assertEquals(calc.mul(2,3),6,0.1);
+        assertEquals(calc.mul(2.0, 3.0), 6, 0.1);
     }
 
     @Test
     public void testDiv() {
         Calc calc = new Calc();
-        assertEquals(calc.div(5,2),2.5,0.1);
+        assertEquals(calc.div(5.0, 2.0), 2.5, 0.1);
     }
 
 }

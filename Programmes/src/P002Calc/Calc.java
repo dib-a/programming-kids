@@ -15,17 +15,17 @@ public class Calc {
     }
 
     //TODO: Subtrahiere 2 Zahlen
-    public double sub(double a) {
+    public double sub(double a, double b) {
         return a;
     }
 
     //TODO: Multipliziere 2 Zahlen
-    public double mul(double b) {
+    public double mul(double a, double b) {
         return 0;
     }
 
     //TODO: Dividiere 2 Zahlen
-    public double div() {
+    public double div(double a, double b) {
         return 0;
     }
 
