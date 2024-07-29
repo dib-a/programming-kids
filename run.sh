@@ -15,53 +15,6 @@ SRC_DIR="$ROOT_DIR/Programmes/src"
 TEST_DIR="$ROOT_DIR/Programmes/test"
 BIN_DIR="$ROOT_DIR/bin"
 
-# Überprüfen, ob die Verzeichnisse existieren
-if [[ ! -d $SRC_DIR ]]; then
-    echo -e "${RED}Das Quellverzeichnis $SRC_DIR existiert nicht!${NC}"
-    exit 1
-fi
-
-if [[ ! -d $TEST_DIR ]]; then
-    echo -e "${RED}Das Testverzeichnis $TEST_DIR existiert nicht!${NC}"
-    exit 1
-fi
-
-# Liste der verfügbaren Projekte
-PROJECTS=($(ls -d $SRC_DIR/* 2>/dev/null))
-PROJECTS=("${PROJECTS[@]##*/}") # Entferne den Pfad und behalte nur die Verzeichnisnamen
-
-if [ ${#PROJECTS[@]} -eq 0 ]; then
-    echo -e "${RED}Keine Projekte gefunden!${NC}"
-    exit 1
-fi
-
-# Projekt auswählen
-echo "Wähle ein Projekt aus:"
-PS3="Bitte wähle ein Projekt: "
-select PROJECT in "${PROJECTS[@]}"; do
-    if [[ -n $PROJECT ]]; then
-        break
-    else
-        echo -e "${RED}Ungültige Auswahl. Bitte wähle eine Nummer aus der Liste.${NC}"
-    fi
-done
-
-# Verzeichnisse im gewählten Projekt
-PROJECT_SRC_DIR="$SRC_DIR/$PROJECT"
-PROJECT_TEST_DIR="$TEST_DIR/$PROJECT"
-
-# Option auswählen: Testen oder Bearbeiten
-echo "Was möchtest du tun?"
-PS3="Bitte wähle eine Option: "
-options=("Programm testen" "Programm bearbeiten")
-select OPTION in "${options[@]}"; do
-    if [[ -n $OPTION ]]; then
-        break
-    else
-        echo -e "${RED}Ungültige Auswahl. Bitte wähle eine Nummer aus der Liste.${NC}"
-    fi
-done
-
 # Funktion zum Kompilieren und Ausführen der Programme und Tests
 run_tests() {
     # Erstelle das bin Verzeichnis, falls es nicht existiert
@@ -73,12 +26,12 @@ run_tests() {
 
     if [ ${#PROGRAM_FILES[@]} -eq 0 ]; then
         echo -e "${RED}Keine Java-Quellcode-Dateien im Projektverzeichnis gefunden!${NC}"
-        exit 1
+        return
     fi
 
     if [ ${#TEST_FILES[@]} -eq 0 ]; then
         echo -e "${RED}Keine Testdateien im Testverzeichnis gefunden!${NC}"
-        exit 1
+        return
     fi
 
     # Kompiliere alle Java Dateien im Projektverzeichnis und erfasse die Ausgabe
@@ -87,7 +40,7 @@ run_tests() {
     if [ $? -ne 0 ]; then
         echo -e "${RED}Fehler beim Kompilieren der Java-Dateien!${NC}"
         echo "$COMPILATION_OUTPUT"
-        exit 1
+        return
     fi
     echo -e "${GREEN}Kompilierung erfolgreich!${NC}"
 
@@ -95,65 +48,129 @@ run_tests() {
     echo -e "${GREEN}Führe Programme aus...${NC}"
     for program_file in "${PROGRAM_FILES[@]}"; do
         program_class=$(basename $program_file .java)
-        echo -e "${GREEN}--- Anfang der Ausgabe von ${program_class} ---${NC}"
+        echo -e "${GREEN}Ausgabe von ${PROJECT}.${program_class}:${NC}"
         java -Duser.language=de -cp $BIN_DIR ${PROJECT}.${program_class} 2>&1 | while IFS= read -r line; do
             echo -e "${YELLOW}$line${NC}"
         done
-        echo -e "${GREEN}--- Ende der Ausgabe von ${program_class} ---${NC}"
+        echo -e "${GREEN}--- Ende der Ausgabe von ${PROJECT}.${program_class} ---${NC}"
     done
 
     # Führe die Tests aus und erfasse die Ausgabe
     echo -e "${GREEN}Führe Tests aus...${NC}"
+    TEST_OUTPUT_FILE=$(mktemp)
     for test_file in "${TEST_FILES[@]}"; do
         test_class=$(basename $test_file .java)
-        echo -e "${GREEN}Teste ${test_class}...${NC}"
-        TEST_OUTPUT=$(java -Duser.language=de -cp $BIN_DIR:$JUNIT_JAR:$HAMCREST_JAR org.junit.runner.JUnitCore ${PROJECT}.${test_class} 2>&1)
+        echo -e "${GREEN}Teste ${PROJECT}.${test_class}...${NC}"
+        java -Duser.language=de -cp $BIN_DIR:$JUNIT_JAR:$HAMCREST_JAR org.junit.runner.JUnitCore ${PROJECT}.${test_class} > $TEST_OUTPUT_FILE 2>&1
         if [ $? -eq 0 ]; then
-            echo -e "${GREEN}Alle Tests für ${test_class} bestanden!${NC}"
+            echo -e "${GREEN}Alle Tests für ${PROJECT}.${test_class} bestanden!${NC}"
         else
-            echo -e "${RED}Einige Tests für ${test_class} sind fehlgeschlagen.${NC}"
-            echo "$TEST_OUTPUT"
+            echo -e "${RED}Einige Tests für ${PROJECT}.${test_class} sind fehlgeschlagen.${NC}"
+            echo "Fehlerausgabe:"
+            cat $TEST_OUTPUT_FILE
         fi
     done
+    rm -f $TEST_OUTPUT_FILE
 
     # Lösche das bin Verzeichnis
     echo -e "${GREEN}Lösche das bin Verzeichnis...${NC}"
-    rm -rf "$BIN_DIR"
+    rm -rf $BIN_DIR
 
     echo -e "${GREEN}Alle Tests abgeschlossen.${NC}"
 }
 
 # Funktion zum Bearbeiten der Dateien
 edit_files() {
-    FILES=($(find "$PROJECT_SRC_DIR" -name "*.java"))
-    FILES=("${FILES[@]##*/}") # Entferne den Pfad und behalte nur die Dateinamen
+    while true; do
+        FILES=($(find $PROJECT_SRC_DIR -name "*.java"))
+        FILES=("${FILES[@]##*/}") # Entferne den Pfad und behalte nur die Dateinamen
 
-    if [ ${#FILES[@]} -eq 0 ]; then
-        echo -e "${RED}Keine Java-Quellcode-Dateien zum Bearbeiten gefunden!${NC}"
-        exit 1
-    fi
-
-    echo "Wähle eine Datei zum Bearbeiten aus:"
-    PS3="Bitte wähle eine Datei: "
-    select FILE in "${FILES[@]}"; do
-        if [[ -n $FILE ]]; then
-            nvim $PROJECT_SRC_DIR/$FILE
-            break
-        else
-            echo -e "${RED}Ungültige Auswahl. Bitte wähle eine Nummer aus der Liste.${NC}"
+        if [ ${#FILES[@]} -eq 0 ]; then
+            echo -e "${RED}Keine Java-Quellcode-Dateien zum Bearbeiten gefunden!${NC}"
+            return
         fi
+
+        echo
+        echo -e "${YELLOW}Wähle eine Datei zum Bearbeiten aus:${NC}"
+        echo "0) Zurück"
+        PS3=$(echo -e "${GREEN}Bitte wähle eine Datei: ${NC}")
+        select FILE in "${FILES[@]}"; do
+            if [[ $REPLY == 0 ]]; then
+                return
+            elif [[ -n $FILE ]]; then
+                nvim $PROJECT_SRC_DIR/$FILE
+                break
+            else
+                echo -e "${RED}Ungültige Auswahl. Bitte wähle eine Nummer aus der Liste.${NC}"
+            fi
+        done
     done
 }
 
-# Aktionen basierend auf der ausgewählten Option ausführen
-case $OPTION in
-    "Programm testen")
-        run_tests
-        ;;
-    "Programm bearbeiten")
-        edit_files
-        ;;
-    *)
-        echo -e "${RED}Ungültige Option. Skript wird beendet.${NC}"
-        ;;
-esac
+# Hauptmenü Funktion
+main_menu() {
+    while true; do
+        # Liste der verfügbaren Projekte
+        PROJECTS=($(ls -d $SRC_DIR/* 2>/dev/null))
+        PROJECTS=("${PROJECTS[@]##*/}") # Entferne den Pfad und behalte nur die Verzeichnisnamen
+
+        if [ ${#PROJECTS[@]} -eq 0 ]; then
+            echo -e "${RED}Keine Projekte gefunden!${NC}"
+            exit 1
+        fi
+
+        echo
+        echo -e "${YELLOW}Wähle ein Projekt aus:${NC}"
+        echo "0) Beenden"
+        PS3=$(echo -e "${GREEN}Bitte wähle ein Projekt: ${NC}")
+        select PROJECT in "${PROJECTS[@]}"; do
+            if [[ $REPLY == 0 ]]; then
+                echo -e "${GREEN}Beende das Skript.${NC}"
+                exit 0
+            elif [[ -n $PROJECT ]]; then
+                project_menu
+                break
+            else
+                echo -e "${RED}Ungültige Auswahl. Bitte wähle eine Nummer aus der Liste.${NC}"
+            fi
+        done
+    done
+}
+
+# Projektmenü Funktion
+project_menu() {
+    while true; do
+        # Verzeichnisse im gewählten Projekt
+        PROJECT_SRC_DIR="$SRC_DIR/$PROJECT"
+        PROJECT_TEST_DIR="$TEST_DIR/$PROJECT"
+
+        echo
+        echo -e "${YELLOW}Was möchtest du tun?${NC}"
+        echo "0) Zurück"
+        PS3=$(echo -e "${GREEN}Bitte wähle eine Option: ${NC}")
+        options=("Programm testen" "Programm bearbeiten")
+        select OPTION in "${options[@]}"; do
+            if [[ $REPLY == 0 ]]; then
+                return
+            elif [[ -n $OPTION ]]; then
+                case $OPTION in
+                    "Programm testen")
+                        run_tests
+                        ;;
+                    "Programm bearbeiten")
+                        edit_files
+                        ;;
+                    *)
+                        echo -e "${RED}Ungültige Option. Skript wird beendet.${NC}"
+                        ;;
+                esac
+                break
+            else
+                echo -e "${RED}Ungültige Auswahl. Bitte wähle eine Nummer aus der Liste.${NC}"
+            fi
+        done
+    done
+}
+
+# Starte das Hauptmenü
+main_menu
