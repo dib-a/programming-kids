@@ -10,6 +10,6 @@ public class ConditionIf {
 
     //TODO: Es soll überprüft werden, ob das Alter größer oder gleich 18 ist
     public boolean checkAge(int age) {
-        return false;
+        return 18 <= age;
     }
 }
