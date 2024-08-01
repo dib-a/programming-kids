@@ -1,4 +1,4 @@
-package P004LoopWhile;
+package P005LoopWhile;
 
 import org.junit.Test;
 

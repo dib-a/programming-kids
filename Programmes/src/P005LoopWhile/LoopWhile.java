@@ -1,4 +1,4 @@
-package P004LoopWhile;
+package P005LoopWhile;
 
 public class LoopWhile {
     public static void main(String[] args) {
