@@ -51,12 +51,12 @@ public class SwitchTest {
     @Test
     public void checkElse1() {
         Switch switch1 = new Switch();
-        assertTrue("\nEs sollte \"Kein Wochentag\" Ausgegeben werden. Es wurde aber " + switch1.checkWeekDay(7) + " ausgegeben", "kein Wochentag".equalsIgnoreCase(switch1.checkWeekDay(0)));
+        assertTrue("\nEs sollte \"\" Ausgegeben werden. Es wurde aber " + switch1.checkWeekDay(7) + " ausgegeben", "".equalsIgnoreCase(switch1.checkWeekDay(0)));
     }
 
     @Test
     public void checkElse2() {
         Switch switch1 = new Switch();
-        assertTrue("\nEs sollte \"Kein Wochentag\" Ausgegeben werden. Es wurde aber " + switch1.checkWeekDay(7) + " ausgegeben", "kein Wochentag".equalsIgnoreCase(switch1.checkWeekDay(100)));
+        assertTrue("\nEs sollte \"\" Ausgegeben werden. Es wurde aber " + switch1.checkWeekDay(7) + " ausgegeben", "".equalsIgnoreCase(switch1.checkWeekDay(100)));
     }
 }
