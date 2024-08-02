@@ -15,37 +15,37 @@ public class SwitchTest {
     @Test
     public void checkTuesday() {
         Switch switch1 = new Switch();
-        assertTrue("\nEs sollte Montag Ausgegeben werden. Es wurde aber " + switch1.checkWeekDay(2) + " ausgegeben", "Dienstag".equalsIgnoreCase(switch1.checkWeekDay(2)));
+        assertTrue("\nEs sollte Dienstag Ausgegeben werden. Es wurde aber " + switch1.checkWeekDay(2) + " ausgegeben", "Dienstag".equalsIgnoreCase(switch1.checkWeekDay(2)));
     }
 
     @Test
     public void checkWednesday() {
         Switch switch1 = new Switch();
-        assertTrue("\nEs sollte Montag Ausgegeben werden. Es wurde aber " + switch1.checkWeekDay(3) + " ausgegeben", "Mittwoch".equalsIgnoreCase(switch1.checkWeekDay(3)));
+        assertTrue("\nEs sollte Mittwoch Ausgegeben werden. Es wurde aber " + switch1.checkWeekDay(3) + " ausgegeben", "Mittwoch".equalsIgnoreCase(switch1.checkWeekDay(3)));
     }
 
     @Test
     public void checkThursday() {
         Switch switch1 = new Switch();
-        assertTrue("\nEs sollte Montag Ausgegeben werden. Es wurde aber " + switch1.checkWeekDay(4) + " ausgegeben", "Donnerstag".equalsIgnoreCase(switch1.checkWeekDay(4)));
+        assertTrue("\nEs sollte Donnerstag Ausgegeben werden. Es wurde aber " + switch1.checkWeekDay(4) + " ausgegeben", "Donnerstag".equalsIgnoreCase(switch1.checkWeekDay(4)));
     }
 
     @Test
     public void checkFriday() {
         Switch switch1 = new Switch();
-        assertTrue("\nEs sollte Montag Ausgegeben werden. Es wurde aber " + switch1.checkWeekDay(5) + " ausgegeben", "Freitag".equalsIgnoreCase(switch1.checkWeekDay(5)));
+        assertTrue("\nEs sollte Freitag Ausgegeben werden. Es wurde aber " + switch1.checkWeekDay(5) + " ausgegeben", "Freitag".equalsIgnoreCase(switch1.checkWeekDay(5)));
     }
 
     @Test
     public void checkSaturday() {
         Switch switch1 = new Switch();
-        assertTrue("\nEs sollte Montag Ausgegeben werden. Es wurde aber " + switch1.checkWeekDay(6) + " ausgegeben", "Samstag".equalsIgnoreCase(switch1.checkWeekDay(6)));
+        assertTrue("\nEs sollte Samstag Ausgegeben werden. Es wurde aber " + switch1.checkWeekDay(6) + " ausgegeben", "Samstag".equalsIgnoreCase(switch1.checkWeekDay(6)));
     }
 
     @Test
     public void checkSunday() {
         Switch switch1 = new Switch();
-        assertTrue("\nEs sollte Montag Ausgegeben werden. Es wurde aber " + switch1.checkWeekDay(7) + " ausgegeben", "Sonntag".equalsIgnoreCase(switch1.checkWeekDay(7)));
+        assertTrue("\nEs sollte Sonntag Ausgegeben werden. Es wurde aber " + switch1.checkWeekDay(7) + " ausgegeben", "Sonntag".equalsIgnoreCase(switch1.checkWeekDay(7)));
     }
 
     @Test
