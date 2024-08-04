@@ -7,7 +7,7 @@ public class LoopWhile {
         System.out.println(loopWhile.calculateSum());
     }
 
-    // Bilde die Summe von 1 bis 100 (d.h 1+2+3+...+98+99+100)
+    //TODO: Bilde die Summe von 1 bis 100 (d.h 1+2+3+...+98+99+100)
     public int calculateSum() {
         return 0;
     }
