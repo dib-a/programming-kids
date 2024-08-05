@@ -60,12 +60,12 @@ run_tests() {
     TEST_OUTPUT_FILE=$(mktemp)
     for test_file in "${TEST_FILES[@]}"; do
         test_class=$(basename $test_file .java)
-        echo -e "${GREEN}Teste ${PROJECT}.${test_class}...${NC}"
+        echo -e "${GREEN}Teste ${PROJECT}...${NC}"
         java -Duser.language=de -cp $BIN_DIR:$JUNIT_JAR:$HAMCREST_JAR org.junit.runner.JUnitCore ${PROJECT}.${test_class} > $TEST_OUTPUT_FILE 2>&1
         if [ $? -eq 0 ]; then
-            echo -e "${GREEN}Alle Tests für ${PROJECT}.${test_class} bestanden!${NC}"
+            echo -e "${GREEN}Alle Tests für ${PROJECT} bestanden!${NC}"
         else
-            echo -e "${RED}Einige Tests für ${PROJECT}.${test_class} sind fehlgeschlagen.${NC}"
+            echo -e "${RED}Einige Tests für ${PROJECT} sind fehlgeschlagen.${NC}"
             echo "Fehlerausgabe:"
             cat $TEST_OUTPUT_FILE
         fi
@@ -73,10 +73,7 @@ run_tests() {
     rm -f $TEST_OUTPUT_FILE
 
     # Lösche das bin Verzeichnis
-    echo -e "${GREEN}Lösche das bin Verzeichnis...${NC}"
     rm -rf $BIN_DIR
-
-    echo -e "${GREEN}Alle Tests abgeschlossen.${NC}"
 }
 
 # Funktion zum Bearbeiten der Dateien
